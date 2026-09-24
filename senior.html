@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Senior Citizen Profile - KSP Sahayak Citizen Assistance Portal, Karnataka State Police." />
+  <title>My Sahayak Profile | KSP Sahayak – Senior Citizen Portal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'Noto Sans Kannada', 'sans-serif'] },
+          colors: {
+            kspNavy: { 950:'#020c1b', 900:'#031427', 800:'#082447', 700:'#0f2848', 600:'#163970', 500:'#1a56b2', 100:'#f0f4fa', 50:'#f8fafc' },
+            kspGold: { DEFAULT:'#d4af37', dark:'#b89025', light:'#fef08a' }
+          }
+        }
+      }
+    };
+  </script>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      background:
+        radial-gradient(circle at 8% 18%, rgba(254,240,138,.42) 0, transparent 24rem),
+        radial-gradient(circle at 94% 8%, rgba(191,219,254,.72) 0, transparent 30rem),
+        radial-gradient(circle at 86% 78%, rgba(221,214,254,.38) 0, transparent 25rem), #f1f5f9;
+      margin: 0; font-family: 'Plus Jakarta Sans', Inter, sans-serif; color:#0f172a;
+    }
+    button, a { -webkit-tap-highlight-color:transparent; }
+    button { transition:transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+    button:hover { filter:brightness(1.03); }
+    button:active { transform:translateY(1px); }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline:3px solid rgba(212,175,55,.72); outline-offset:3px; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+    .fade-up { animation: fadeUp 0.4s ease both; }
+    .fade-up-1 { animation: fadeUp 0.4s 0.08s ease both; }
+    .fade-up-2 { animation: fadeUp 0.4s 0.16s ease both; }
+
+    .section-card { position:relative; overflow:hidden; background:rgba(255,255,255,.94); border-radius:20px; border:1px solid #e2e8f0; padding:24px; box-shadow:0 4px 16px rgba(8,36,71,.06); transition:box-shadow .2s ease, transform .2s ease; }
+    .section-card:hover { box-shadow:0 12px 30px rgba(8,36,71,.10); transform:translateY(-2px); }
+    .section-card::before { content:''; position:absolute; left:0; top:0; width:5px; height:100%; background:linear-gradient(180deg,#2563eb,#7c3aed); }
+    .section-card:nth-of-type(3n)::before { background:linear-gradient(180deg,#f59e0b,#ef4444); }
+    .section-card:nth-of-type(3n+1)::before { background:linear-gradient(180deg,#10b981,#06b6d4); }
+    .info-row { display:flex; align-items:flex-start; gap:14px; padding:14px 16px; border-radius:14px; background:#f8fafc; border:1px solid #e2e8f0; margin-bottom:10px; transition:background .16s ease, border-color .16s ease; }
+    .info-row:hover { background:#fff; border-color:#bfdbfe; }
+    .preference-chip { display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:999px; background:linear-gradient(135deg,#fff,#eff6ff); border:1px solid #bfdbfe; color:#163970; font-size:12px; font-weight:800; box-shadow:0 3px 8px rgba(37,99,235,.10); }
+    .preference-chip:nth-child(2n) { background:linear-gradient(135deg,#fff,#faf5ff); border-color:#ddd6fe; color:#6d28d9; }
+    .preference-chip:nth-child(3n) { background:linear-gradient(135deg,#fff,#ecfdf5); border-color:#a7f3d0; color:#047857; }
+    .colour-banner { position:relative; overflow:hidden; }
+    .colour-banner::after { content:''; position:absolute; width:230px; height:230px; border-radius:50%; right:-80px; top:-115px; background:radial-gradient(circle,rgba(250,204,21,.26),transparent 68%); pointer-events:none; }
+    .language-switch { display:flex; gap:3px; padding:3px; border:1px solid rgba(255,255,255,.16); border-radius:10px; background:rgba(255,255,255,.08); }
+    .language-switch button { border:0; border-radius:7px; padding:5px 8px; background:transparent; color:#dbeafe; cursor:pointer; font-size:11px; font-weight:800; }
+    .language-switch button.active { background:#ffffff; color:#082447; box-shadow:0 2px 6px rgba(0,0,0,.18); }
+
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
+
+    @media (max-width:640px) {
+      .portal-header { padding:10px 14px !important; }
+      .portal-logo { height:36px !important; width:36px !important; }
+      .portal-wordmark { font-size:17px !important; }
+      .portal-tagline { display:none; }
+      .hero-card { padding:18px !important; }
+      .hero-name { font-size:22px !important; }
+      .hero-edit { align-self:stretch !important; justify-content:center; }
+      .edit-grid, .services-grid { grid-template-columns:1fr !important; }
+      .edit-grid .edit-address { grid-column:span 1 !important; }
+      .modal-card { padding:20px !important; }
+      .info-row { padding:12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const TRANSLATIONS = {
+      kn: {
+        'Verified Profile Record':'ಪರಿಶೀಲಿತ ಪ್ರೊಫೈಲ್ ದಾಖಲೆ','Update Record':'ದಾಖಲೆಯನ್ನು ನವೀಕರಿಸಿ','Update Profile Record':'ಪ್ರೊಫೈಲ್ ದಾಖಲೆಯನ್ನು ನವೀಕರಿಸಿ','Authorised staff update only':'ಅಧಿಕೃತ ಸಿಬ್ಬಂದಿಗೆ ಮಾತ್ರ ನವೀಕರಣ','Update Personal Record':'ವೈಯಕ್ತಿಕ ದಾಖಲೆಯನ್ನು ನವೀಕರಿಸಿ',
+        'Senior Citizen Portal · Karnataka State Police':'ಹಿರಿಯ ನಾಗರಿಕರ ಪೋರ್ಟಲ್ · ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್','Profile':'ಪ್ರೊಫೈಲ್','Requests':'ವಿನಂತಿಗಳು','Logout':'ಲಾಗ್ ಔಟ್','Senior Citizen':'ಹಿರಿಯ ನಾಗರಿಕ','Age':'ವಯಸ್ಸು','Male':'ಪುರುಷ','Copy ID':'ಐಡಿ ನಕಲಿಸಿ','Copied!':'ನಕಲಿಸಲಾಗಿದೆ!','Profile Verified':'ಪ್ರೊಫೈಲ್ ಪರಿಶೀಲಿಸಲಾಗಿದೆ','Edit Profile':'ಪ್ರೊಫೈಲ್ ತಿದ್ದು','Personal Information':'ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ','Full Name':'ಪೂರ್ಣ ಹೆಸರು','Date of Birth':'ಜನ್ಮ ದಿನಾಂಕ','Gender':'ಲಿಂಗ','Phone Number':'ದೂರವಾಣಿ ಸಂಖ್ಯೆ','Email Address':'ಇಮೇಲ್ ವಿಳಾಸ','Preferred Languages':'ಆದ್ಯತೆಯ ಭಾಷೆಗಳು','Volunteer communication can be arranged in these languages.':'ಸ್ವಯಂಸೇವಕರ ಸಂಪರ್ಕವನ್ನು ಈ ಭಾಷೆಗಳಲ್ಲಿ ಆಯೋಜಿಸಬಹುದು.','Residential Address':'ವಸತಿ ವಿಳಾಸ','House / Building':'ಮನೆ / ಕಟ್ಟಡ','Village / Taluk':'ಗ್ರಾಮ / ತಾಲ್ಲೂಕು','District · State · PIN':'ಜಿಲ್ಲೆ · ರಾಜ್ಯ · ಪಿನ್','Emergency Contact':'ತುರ್ತು ಸಂಪರ್ಕ','Contact Name':'ಸಂಪರ್ಕದ ಹೆಸರು','Relationship':'ಸಂಬಂಧ','Registration Information':'ನೋಂದಣಿ ಮಾಹಿತಿ','Registered On':'ನೋಂದಣಿ ದಿನಾಂಕ','Profile Status':'ಪ್ರೊಫೈಲ್ ಸ್ಥಿತಿ','Last Updated':'ಕೊನೆಯ ನವೀಕರಣ','Edit Personal Information':'ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ತಿದ್ದು','Update your details':'ನಿಮ್ಮ ವಿವರಗಳನ್ನು ನವೀಕರಿಸಿ','System Generated':'ವ್ಯವಸ್ಥೆಯಿಂದ ರಚಿಸಲಾಗಿದೆ','Address':'ವಿಳಾಸ','Emergency Contact Name':'ತುರ್ತು ಸಂಪರ್ಕದ ಹೆಸರು','Emergency Contact Phone':'ತುರ್ತು ಸಂಪರ್ಕ ದೂರವಾಣಿ','Cancel':'ರದ್ದುಮಾಡಿ','Save Changes':'ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ','Volunteer is On the Way!':'ಸ್ವಯಂಸೇವಕರು ಮಾರ್ಗದಲ್ಲಿದ್ದಾರೆ!','Volunteer Assigned':'ಸ್ವಯಂಸೇವಕರು ನಿಯೋಜಿಸಲಾಗಿದೆ','Your Volunteer':'ನಿಮ್ಮ ಸ್ವಯಂಸೇವಕರು','Verified':'ಪರಿಶೀಲಿಸಲಾಗಿದೆ','Call Volunteer':'ಸ್ವಯಂಸೇವಕರಿಗೆ ಕರೆ ಮಾಡಿ','Past Requests':'ಹಿಂದಿನ ವಿನಂತಿಗಳು','Medical Assistance':'ವೈದ್ಯಕೀಯ ನೆರವು','Medicine Delivery':'ಔಷಧ ವಿತರಣೆ','Grocery Assistance':'ದಿನಸಿ ನೆರವು','Completed':'ಪೂರ್ಣಗೊಂಡಿದೆ','Need phone help?':'ದೂರವಾಣಿ ಸಹಾಯ ಬೇಕೇ?','Call toll-free helpline:':'ಉಚಿತ ಸಹಾಯವಾಣಿಗೆ ಕರೆ ಮಾಡಿ:','Karnataka State Police · Udupi District · Sahayak Programme':'ಕರ್ನಾಟಕ ರಾಜ್ಯ ಪೊಲೀಸ್ · ಉಡುಪಿ ಜಿಲ್ಲೆ · ಸಹಾಯಕ ಕಾರ್ಯಕ್ರಮ','Today, 10:30 AM':'ಇಂದು, 10:30 ಪೂರ್ವಾಹ್ನ','Sahayak ID':'ಸಹಾಯಕ ಐಡಿ','Care status':'ಆರೈಕೆ ಸ್ಥಿತಿ','Verified & protected':'ಪರಿಶೀಲಿಸಲಾಗಿದೆ ಮತ್ತು ರಕ್ಷಿಸಲಾಗಿದೆ','Community care network':'ಸಮುದಾಯ ಆರೈಕೆ ಜಾಲ','Senior helpline':'ಹಿರಿಯರ ಸಹಾಯವಾಣಿ','Tulu':'ತುಳು','English':'ಇಂಗ್ಲಿಷ್','Hindi':'ಹಿಂದಿ','Kannada':'ಕನ್ನಡ'
+      },
+      hi: {
+        'Verified Profile Record':'सत्यापित प्रोफ़ाइल रिकॉर्ड','Update Record':'रिकॉर्ड अपडेट करें','Update Profile Record':'प्रोफ़ाइल रिकॉर्ड अपडेट करें','Authorised staff update only':'केवल अधिकृत कर्मचारी अपडेट कर सकते हैं','Update Personal Record':'व्यक्तिगत रिकॉर्ड अपडेट करें',
+        'Senior Citizen Portal · Karnataka State Police':'वरिष्ठ नागरिक पोर्टल · कर्नाटक राज्य पुलिस','Profile':'प्रोफ़ाइल','Requests':'अनुरोध','Logout':'लॉग आउट','Senior Citizen':'वरिष्ठ नागरिक','Age':'आयु','Male':'पुरुष','Copy ID':'आईडी कॉपी करें','Copied!':'कॉपी किया गया!','Profile Verified':'प्रोफ़ाइल सत्यापित','Edit Profile':'प्रोफ़ाइल संपादित करें','Personal Information':'व्यक्तिगत जानकारी','Full Name':'पूरा नाम','Date of Birth':'जन्म तिथि','Gender':'लिंग','Phone Number':'फ़ोन नंबर','Email Address':'ईमेल पता','Preferred Languages':'पसंदीदा भाषाएँ','Volunteer communication can be arranged in these languages.':'स्वयंसेवक से बातचीत इन भाषाओं में की जा सकती है।','Residential Address':'आवासीय पता','House / Building':'मकान / भवन','Village / Taluk':'गाँव / तालुक','District · State · PIN':'जिला · राज्य · पिन','Emergency Contact':'आपात संपर्क','Contact Name':'संपर्क नाम','Relationship':'संबंध','Registration Information':'पंजीकरण जानकारी','Registered On':'पंजीकरण तिथि','Profile Status':'प्रोफ़ाइल स्थिति','Last Updated':'अंतिम अपडेट','Edit Personal Information':'व्यक्तिगत जानकारी संपादित करें','Update your details':'अपनी जानकारी अपडेट करें','System Generated':'सिस्टम द्वारा बनाया गया','Address':'पता','Emergency Contact Name':'आपात संपर्क का नाम','Emergency Contact Phone':'आपात संपर्क फ़ोन','Cancel':'रद्द करें','Save Changes':'बदलाव सहेजें','Volunteer is On the Way!':'स्वयंसेवक रास्ते में हैं!','Volunteer Assigned':'स्वयंसेवक आवंटित','Your Volunteer':'आपके स्वयंसेवक','Verified':'सत्यापित','Call Volunteer':'स्वयंसेवक को कॉल करें','Past Requests':'पिछले अनुरोध','Medical Assistance':'चिकित्सा सहायता','Medicine Delivery':'दवा वितरण','Grocery Assistance':'किराना सहायता','Completed':'पूर्ण','Need phone help?':'फ़ोन सहायता चाहिए?','Call toll-free helpline:':'टोल-फ्री हेल्पलाइन पर कॉल करें:','Karnataka State Police · Udupi District · Sahayak Programme':'कर्नाटक राज्य पुलिस · उडुपी जिला · सहायक कार्यक्रम','Today, 10:30 AM':'आज, 10:30 पूर्वाह्न','Sahayak ID':'सहायक आईडी','Care status':'देखभाल स्थिति','Verified & protected':'सत्यापित और सुरक्षित','Community care network':'सामुदायिक देखभाल नेटवर्क','Senior helpline':'वरिष्ठ हेल्पलाइन','Tulu':'तुलु','English':'अंग्रेज़ी','Hindi':'हिंदी','Kannada':'कन्नड़'
+      }
+    };
+
+    // These are the remaining operational interface labels that appear in the
+    // profile record and its edit dialog.  Keeping them in one shared dictionary
+    // means the entire interface changes together, rather than only some cards.
+    Object.assign(TRANSLATIONS.kn, {
+      'Select language':'ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ', 'Email':'ಇಮೇಲ್',
+      'Edit language preferences':'ಭಾಷಾ ಆದ್ಯತೆಗಳನ್ನು ತಿದ್ದು',
+      'Select every language suitable for volunteer communication.':'ಸ್ವಯಂಸೇವಕರ ಸಂವಹನಕ್ಕೆ ಸೂಕ್ತವಾದ ಎಲ್ಲಾ ಭಾಷೆಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+      'Language preferences updated':'ಭಾಷಾ ಆದ್ಯತೆಗಳನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ',
+      'Karnataka':'ಕರ್ನಾಟಕ', 'Udupi':'ಉಡುಪಿ', 'Taluk':'ತಾಲ್ಲೂಕು', 'Son':'ಮಗ', 'Shirva Police Station':'ಶಿರ್ವಾ ಪೊಲೀಸ್ ಠಾಣೆ',
+      'August 2026':'ಆಗಸ್ಟ್ 2026', 'September 2026':'ಸೆಪ್ಟೆಂಬರ್ 2026', '14 August 1952':'14 ಆಗಸ್ಟ್ 1952',
+      'SAHAYAK':'ಸಹಾಯಕ', 'Ramachandra Bhat':'ರಾಮಚಂದ್ರ ಭಟ್', 'Suresh Bhat':'ಸುರೇಶ್ ಭಟ್',
+      'Shirva':'ಶಿರ್ವಾ', 'Kaup':'ಕಾಪು', 'No. 12, 3rd Cross, Opposite Durga Temple':'ನಂ. 12, 3ನೇ ಕ್ರಾಸ್, ದುರ್ಗಾ ದೇವಸ್ಥಾನದ ಎದುರು',
+      'Udupi District':'ಉಡುಪಿ ಜಿಲ್ಲೆ', 'Sahayak Programme':'ಸಹಾಯಕ ಕಾರ್ಯಕ್ರಮ',
+      'Profile Photo':'ಪ್ರೊಫೈಲ್ ಫೋಟೋ', 'Upload Photo':'ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ', 'Change Photo':'ಫೋಟೋ ಬದಲಾಯಿಸಿ', 'Remove Photo':'ಫೋಟೋ ತೆಗೆದುಹಾಕಿ',
+      'Choose a clear profile photo for this record.':'ಈ ದಾಖಲೆಗೆ ಸ್ಪಷ್ಟವಾದ ಪ್ರೊಫೈಲ್ ಫೋಟೋ ಆಯ್ಕೆಮಾಡಿ.',
+      'Identity & Eligibility':'ಗುರುತು ಮತ್ತು ಅರ್ಹತೆ', 'Aadhaar Number':'ಆಧಾರ್ ಸಂಖ್ಯೆ', 'Aadhaar Number (masked)':'ಆಧಾರ್ ಸಂಖ್ಯೆ (ಮರೆಮಾಚಲಾಗಿದೆ)', 'Senior Citizen Card Number':'ಹಿರಿಯ ನಾಗರಿಕರ ಕಾರ್ಡ್ ಸಂಖ್ಯೆ', 'Blood Group':'ರಕ್ತದ ಗುಂಪು', 'Masked for privacy':'ಗೌಪ್ಯತೆಗಾಗಿ ಮರೆಮಾಚಲಾಗಿದೆ',
+      'Other Language':'ಇತರೆ ಭಾಷೆ', 'Type another language':'ಇನ್ನೊಂದು ಭಾಷೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ', 'Add Language':'ಭಾಷೆಯನ್ನು ಸೇರಿಸಿ', 'Remove Language':'ಭಾಷೆಯನ್ನು ತೆಗೆದುಹಾಕಿ'
+    });
+    Object.assign(TRANSLATIONS.hi, {
+      'Select language':'भाषा चुनें', 'Email':'ईमेल',
+      'Edit language preferences':'भाषा प्राथमिकताएँ संपादित करें',
+      'Select every language suitable for volunteer communication.':'स्वयंसेवक से बातचीत के लिए उपयुक्त सभी भाषाएँ चुनें।',
+      'Language preferences updated':'भाषा प्राथमिकताएँ अपडेट की गईं',
+      'Karnataka':'कर्नाटक', 'Udupi':'उडुपी', 'Taluk':'तालुक', 'Son':'पुत्र', 'Shirva Police Station':'शिरवा पुलिस थाना',
+      'August 2026':'अगस्त 2026', 'September 2026':'सितंबर 2026', '14 August 1952':'14 अगस्त 1952',
+      'SAHAYAK':'सहायक', 'Ramachandra Bhat':'रामचंद्र भट्ट', 'Suresh Bhat':'सुरेश भट्ट',
+      'Shirva':'शिरवा', 'Kaup':'कापू', 'No. 12, 3rd Cross, Opposite Durga Temple':'मकान नं. 12, तीसरा क्रॉस, दुर्गा मंदिर के सामने',
+      'Udupi District':'उडुपी जिला', 'Sahayak Programme':'सहायक कार्यक्रम',
+      'Profile Photo':'प्रोफ़ाइल फ़ोटो', 'Upload Photo':'फ़ोटो अपलोड करें', 'Change Photo':'फ़ोटो बदलें', 'Remove Photo':'फ़ोटो हटाएँ',
+      'Choose a clear profile photo for this record.':'इस रिकॉर्ड के लिए एक स्पष्ट प्रोफ़ाइल फ़ोटो चुनें।',
+      'Identity & Eligibility':'पहचान और पात्रता', 'Aadhaar Number':'आधार नंबर', 'Aadhaar Number (masked)':'आधार नंबर (छिपाया गया)', 'Senior Citizen Card Number':'वरिष्ठ नागरिक कार्ड नंबर', 'Blood Group':'रक्त समूह', 'Masked for privacy':'गोपनीयता के लिए छिपाया गया',
+      'Other Language':'अन्य भाषा', 'Type another language':'कोई अन्य भाषा लिखें', 'Add Language':'भाषा जोड़ें', 'Remove Language':'भाषा हटाएँ'
+    });
+
+    const PAGE_TITLES = {
+      en: 'My Sahayak Profile | KSP Sahayak – Senior Citizen Portal',
+      kn: 'ನನ್ನ ಸಹಾಯಕ ಪ್ರೊಫೈಲ್ | ಕೆಎಸ್‌ಪಿ ಸಹಾಯಕ – ಹಿರಿಯ ನಾಗರಿಕರ ಪೋರ್ಟಲ್',
+      hi: 'मेरी सहायक प्रोफ़ाइल | केएसपी सहायक – वरिष्ठ नागरिक पोर्टल'
+    };
+
+    const SENIOR_PROFILE = {
+      sahayakId: 'SAH-SC-000341',
+      name: 'Ramachandra Bhat',
+      initials: 'RB',
+      role: 'Senior Citizen',
+      age: 74,
+      dob: '14 August 1952',
+      gender: 'Male',
+      phone: '+91 98765 12345',
+      email: 'ramachandra.bhat@email.com',
+      address: 'No. 12, 3rd Cross, Opposite Durga Temple',
+      village: 'Shirva',
+      taluk: 'Kaup',
+      district: 'Udupi',
+      state: 'Karnataka',
+      pinCode: '574116',
+      emergencyContact: { name: 'Suresh Bhat', relation: 'Son', phone: '+91 99001 23456' },
+      registrationDate: 'August 2026',
+      verificationStatus: 'Profile Verified',
+      lastUpdated: 'September 2026',
+      preferredLanguages: ['Kannada', 'Tulu', 'Hindi', 'English'],
+      photo: '',
+      aadhaar: 'XXXX XXXX 4821',
+      seniorCardNumber: 'KSP-SC-UDU-2026-0341',
+      bloodGroup: 'B+',
+    };
+
+    const REQUESTS = [
+      {
+        id: 'REQ-809', type: 'Medical Assistance', date: 'Today, 10:30 AM', status: 'Volunteer Assigned',
+        statusColor: '#92400e', statusBg: '#fef3c7', statusBorder: '#fde68a',
+        volunteer: 'Ramesh Kumar', phone: '+919876543210', eta: '~15 minutes away',
+        volId: 'SAH-VL-004091', stationVerified: true
+      },
+      {
+        id: 'REQ-752', type: 'Medicine Delivery', date: 'Sep 12, 2026', status: 'Completed',
+        statusColor: '#15803d', statusBg: '#dcfce7', statusBorder: '#bbf7d0',
+        volunteer: 'Suresh Shetty', phone: '', eta: null, volId: 'SAH-VL-003812', stationVerified: true
+      },
+      {
+        id: 'REQ-701', type: 'Grocery Assistance', date: 'Sep 5, 2026', status: 'Completed',
+        statusColor: '#15803d', statusBg: '#dcfce7', statusBorder: '#bbf7d0',
+        volunteer: 'Meena Alva', phone: '', eta: null, volId: 'SAH-VL-004205', stationVerified: true
+      }
+    ];
+
+    function InfoRow({ icon, label, value, large }) {
+      return (
+        <div className="info-row">
+          <span className="material-symbols-outlined" style={{ fontSize: large ? 28 : 22, color:'#163970', fontVariationSettings:"'FILL' 1", flexShrink:0, marginTop:2 }}>{icon}</span>
+          <div>
+            <div style={{ fontSize:'11px', color:'#94a3b8', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:2 }}>{label}</div>
+            <div style={{ fontSize: large ? '18px' : '15px', fontWeight:800, color:'#0f172a', lineHeight:1.4 }}>{value}</div>
+          </div>
+        </div>
+      );
+    }
+
+    function SeniorProfile() {
+      const [editOpen, setEditOpen] = useState(false);
+      const [profile, setProfile] = useState(SENIOR_PROFILE);
+      const [editData, setEditData] = useState({});
+      const [idCopied, setIdCopied] = useState(false);
+      const [language, setLanguage] = useState('en');
+      const [otherLanguage, setOtherLanguage] = useState('');
+      const photoInputRef = useRef(null);
+
+      useEffect(() => {
+        const dictionary = TRANSLATIONS[language];
+        document.title = PAGE_TITLES[language] || PAGE_TITLES.en;
+        const walker = document.createTreeWalker(document.getElementById('root'), NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        const restorePairs = Object.entries(TRANSLATIONS)
+          .flatMap(([, translations]) => Object.entries(translations).map(([english, translated]) => [translated, english]))
+          .sort((a, b) => b[0].length - a[0].length);
+        const terms = dictionary ? Object.keys(dictionary).sort((a, b) => b.length - a.length) : [];
+        nodes.forEach(node => {
+          if (node.parentElement?.classList.contains('material-symbols-outlined')) return;
+          let value = node.nodeValue;
+          restorePairs.forEach(([translated, english]) => { value = value.split(translated).join(english); });
+          terms.forEach(term => { value = value.split(term).join(dictionary[term]); });
+          node.nodeValue = value;
+        });
+
+        // Translate helpful labels on controls too (for screen readers and tooltips).
+        document.getElementById('root').querySelectorAll('[title],[aria-label],[placeholder]').forEach(element => {
+          ['title', 'aria-label', 'placeholder'].forEach(attribute => {
+            if (!element.hasAttribute(attribute)) return;
+            let value = element.getAttribute(attribute);
+            restorePairs.forEach(([translated, english]) => { value = value.split(translated).join(english); });
+            terms.forEach(term => { value = value.split(term).join(dictionary[term]); });
+            element.setAttribute(attribute, value);
+          });
+        });
+      }, [language, editOpen]);
+
+      const copyId = () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(profile.sahayakId).then(() => {
+            setIdCopied(true);
+            setTimeout(() => setIdCopied(false), 2500);
+          });
+        }
+      };
+
+      const openEdit = () => { setEditData({ ...profile }); setOtherLanguage(''); setEditOpen(true); };
+      const saveEdit = () => { setProfile({ ...editData }); setEditOpen(false); };
+      const addOtherLanguage = () => {
+        const value = otherLanguage.trim();
+        if (!value) return;
+        setEditData(previous => ({ ...previous, preferredLanguages: (previous.preferredLanguages || []).includes(value) ? previous.preferredLanguages : [...(previous.preferredLanguages || []), value] }));
+        setOtherLanguage('');
+      };
+      const handlePhotoSelect = event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = () => setEditData(previous => ({ ...previous, photo: reader.result }));
+        reader.readAsDataURL(file);
+      };
+
+      return (
+        <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', background:'#f1f5f9' }}>
+
+          {/* ─── EDIT PROFILE MODAL ─── */}
+          {editOpen && (
+            <div style={{ position:'fixed', inset:0, zIndex:100, background:'rgba(2,12,27,0.75)', backdropFilter:'blur(4px)', display:'flex', alignItems:'center', justifyContent:'center', padding:16, overflowY:'auto' }}>
+              <div className="modal-card" style={{ background:'#fff', borderRadius:20, maxWidth:580, width:'100%', padding:'28px', boxShadow:'0 24px 80px rgba(0,0,0,0.3)', borderTop:'6px solid #082447', margin:'auto' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20, paddingBottom:16, borderBottom:'1px solid #f1f5f9' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                    <div style={{ width:44, height:44, borderRadius:12, background:'linear-gradient(135deg,#082447,#163970)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                      <span className="material-symbols-outlined" style={{ color:'#d4af37', fontSize:22 }}>edit_square</span>
+                    </div>
+                    <div>
+                      <div style={{ fontWeight:900, fontSize:18, color:'#0f172a' }}>Update Profile Record</div>
+                      <div style={{ fontSize:12, color:'#64748b' }}>Authorised staff update only</div>
+                    </div>
+                  </div>
+                  <button onClick={() => setEditOpen(false)} style={{ background:'none', border:'none', cursor:'pointer', color:'#94a3b8', padding:8, borderRadius:8 }}>
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+
+                {/* Sahayak ID - locked */}
+                <div style={{ background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:12, padding:'12px 16px', marginBottom:20, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div>
+                    <div style={{ fontSize:10, color:'#94a3b8', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.05em', marginBottom:2 }}>Sahayak ID</div>
+                    <div style={{ fontFamily:'monospace', fontWeight:800, fontSize:16, color:'#082447' }}>{profile.sahayakId}</div>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, fontWeight:700, color:'#64748b', background:'#f1f5f9', padding:'4px 10px', borderRadius:8, border:'1px solid #e2e8f0' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:14 }}>lock</span> System Generated
+                  </div>
+                </div>
+
+                <div className="edit-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+                  <div className="edit-address" style={{ gridColumn:'span 2', display:'flex', alignItems:'center', gap:14, padding:'14px', border:'1px solid #bfdbfe', borderRadius:12, background:'#f8fbff' }}>
+                    <div style={{ width:60, height:60, flexShrink:0, borderRadius:'50%', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center', background:'#163970', border:'2px solid #d4af37', color:'#fff', fontSize:18, fontWeight:900 }}>
+                      {editData.photo ? <img src={editData.photo} alt="Profile Photo" style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : profile.initials}
+                    </div>
+                    <div style={{ minWidth:0, flex:1 }}>
+                      <label style={{ display:'block', fontSize:11, fontWeight:800, color:'#163970', marginBottom:4, textTransform:'uppercase', letterSpacing:'0.05em' }}>Profile Photo</label>
+                      <p style={{ fontSize:12, lineHeight:1.45, color:'#475569', fontWeight:600, margin:'0 0 9px' }}>Choose a clear profile photo for this record.</p>
+                      <input ref={photoInputRef} type="file" accept="image/*" onChange={handlePhotoSelect} style={{ display:'none' }} />
+                      <div style={{ display:'flex', flexWrap:'wrap', gap:7 }}>
+                        <button type="button" onClick={() => photoInputRef.current?.click()} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'7px 10px', borderRadius:9, border:'none', background:'#163970', color:'#fff', cursor:'pointer', fontSize:12, fontWeight:800 }}><span className="material-symbols-outlined" style={{ fontSize:15 }}>{editData.photo ? 'photo_camera' : 'upload'}</span>{editData.photo ? 'Change Photo' : 'Upload Photo'}</button>
+                        {editData.photo && <button type="button" onClick={() => setEditData(previous => ({ ...previous, photo:'' }))} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'7px 10px', borderRadius:9, border:'1px solid #fecaca', background:'#fff', color:'#b91c1c', cursor:'pointer', fontSize:12, fontWeight:800 }}><span className="material-symbols-outlined" style={{ fontSize:15 }}>delete</span>Remove Photo</button>}
+                      </div>
+                    </div>
+                  </div>
+                  {[
+                    { label:'Full Name', key:'name', icon:'person' },
+                    { label:'Phone Number', key:'phone', icon:'phone' },
+                    { label:'Email', key:'email', icon:'email' },
+                    { label:'Date of Birth', key:'dob', icon:'cake' },
+                    { label:'Aadhaar Number', key:'aadhaar', icon:'fingerprint' },
+                    { label:'Blood Group', key:'bloodGroup', icon:'bloodtype' },
+                    { label:'Senior Citizen Card Number', key:'seniorCardNumber', icon:'badge' },
+                  ].map(f => (
+                    <div key={f.key}>
+                      <label style={{ display:'block', fontSize:11, fontWeight:700, color:'#475569', marginBottom:4, textTransform:'uppercase', letterSpacing:'0.05em' }}>
+                        {f.label}
+                      </label>
+                      <input
+                        value={editData[f.key] || ''}
+                        onChange={e => setEditData(prev => ({ ...prev, [f.key]: e.target.value }))}
+                        style={{ width:'100%', padding:'10px 12px', border:'1px solid #cbd5e1', borderRadius:10, fontSize:14, fontWeight:600, color:'#0f172a', boxSizing:'border-box', outline:'none' }}
+                        onFocus={e => e.target.style.borderColor='#163970'}
+                        onBlur={e => e.target.style.borderColor='#cbd5e1'}
+                      />
+                    </div>
+                  ))}
+                  <div className="edit-address" style={{ gridColumn:'span 2' }}>
+                    <label style={{ display:'block', fontSize:11, fontWeight:700, color:'#475569', marginBottom:4, textTransform:'uppercase', letterSpacing:'0.05em' }}>Address</label>
+                    <input
+                      value={editData.address || ''}
+                      onChange={e => setEditData(prev => ({ ...prev, address: e.target.value }))}
+                      style={{ width:'100%', padding:'10px 12px', border:'1px solid #cbd5e1', borderRadius:10, fontSize:14, fontWeight:600, color:'#0f172a', boxSizing:'border-box', outline:'none' }}
+                      onFocus={e => e.target.style.borderColor='#163970'}
+                      onBlur={e => e.target.style.borderColor='#cbd5e1'}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display:'block', fontSize:11, fontWeight:700, color:'#475569', marginBottom:4, textTransform:'uppercase', letterSpacing:'0.05em' }}>Emergency Contact Name</label>
+                    <input
+                      value={editData.emergencyContact?.name || ''}
+                      onChange={e => setEditData(prev => ({ ...prev, emergencyContact: { ...prev.emergencyContact, name: e.target.value } }))}
+                      style={{ width:'100%', padding:'10px 12px', border:'1px solid #cbd5e1', borderRadius:10, fontSize:14, fontWeight:600, color:'#0f172a', boxSizing:'border-box', outline:'none' }}
+                      onFocus={e => e.target.style.borderColor='#163970'}
+                      onBlur={e => e.target.style.borderColor='#cbd5e1'}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display:'block', fontSize:11, fontWeight:700, color:'#475569', marginBottom:4, textTransform:'uppercase', letterSpacing:'0.05em' }}>Emergency Contact Phone</label>
+                    <input
+                      value={editData.emergencyContact?.phone || ''}
+                      onChange={e => setEditData(prev => ({ ...prev, emergencyContact: { ...prev.emergencyContact, phone: e.target.value } }))}
+                      style={{ width:'100%', padding:'10px 12px', border:'1px solid #cbd5e1', borderRadius:10, fontSize:14, fontWeight:600, color:'#0f172a', boxSizing:'border-box', outline:'none' }}
+                      onFocus={e => e.target.style.borderColor='#163970'}
+                      onBlur={e => e.target.style.borderColor='#cbd5e1'}
+                    />
+                  </div>
+                  <div className="edit-address" style={{ gridColumn:'span 2', padding:'14px', border:'1px solid #bfdbfe', borderRadius:12, background:'#eff6ff', marginTop:4 }}>
+                    <label style={{ display:'flex', alignItems:'center', gap:6, fontSize:11, fontWeight:800, color:'#163970', marginBottom:4, textTransform:'uppercase', letterSpacing:'0.05em' }}><span className="material-symbols-outlined" style={{ fontSize:16 }}>translate</span>Preferred Languages</label>
+                    <p style={{ fontSize:12, lineHeight:1.45, color:'#475569', fontWeight:600, margin:'0 0 10px' }}>Select every language suitable for volunteer communication.</p>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                      {['Kannada', 'Tulu', 'Hindi', 'English'].map(preference => {
+                        const selected = (editData.preferredLanguages || []).includes(preference);
+                        return <button key={preference} type="button" onClick={() => setEditData(prev => ({ ...prev, preferredLanguages: selected ? prev.preferredLanguages.filter(item => item !== preference) : [...(prev.preferredLanguages || []), preference] }))} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'7px 10px', borderRadius:9, cursor:'pointer', border:selected ? '1px solid #163970' : '1px solid #cbd5e1', background:selected ? '#163970' : '#fff', color:selected ? '#fff' : '#334155', fontSize:12, fontWeight:800 }}>
+                          <span className="material-symbols-outlined" style={{ fontSize:15 }}>{selected ? 'check_circle' : 'add_circle'}</span>{preference}
+                        </button>;
+                      })}
+                      {(editData.preferredLanguages || []).filter(preference => !['Kannada', 'Tulu', 'Hindi', 'English'].includes(preference)).map(preference => (
+                        <button key={preference} type="button" onClick={() => setEditData(previous => ({ ...previous, preferredLanguages: previous.preferredLanguages.filter(item => item !== preference) }))} title="Remove Language" style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'7px 10px', borderRadius:9, cursor:'pointer', border:'1px solid #0f766e', background:'#ecfdf5', color:'#115e59', fontSize:12, fontWeight:800 }}>
+                          <span className="material-symbols-outlined" style={{ fontSize:15 }}>close</span>{preference}
+                        </button>
+                      ))}
+                    </div>
+                    <div style={{ display:'flex', flexWrap:'wrap', alignItems:'end', gap:8, marginTop:12, paddingTop:11, borderTop:'1px solid #bfdbfe' }}>
+                      <div style={{ flex:'1 1 190px' }}>
+                        <label style={{ display:'block', fontSize:10, fontWeight:800, color:'#475569', marginBottom:4, textTransform:'uppercase', letterSpacing:'0.05em' }}>Other Language</label>
+                        <input value={otherLanguage} onChange={event => setOtherLanguage(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); addOtherLanguage(); } }} placeholder="Type another language" style={{ width:'100%', padding:'9px 10px', border:'1px solid #cbd5e1', borderRadius:9, fontSize:13, fontWeight:600, color:'#0f172a', boxSizing:'border-box', outline:'none' }} />
+                      </div>
+                      <button type="button" onClick={addOtherLanguage} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'9px 11px', borderRadius:9, border:'none', background:'#0f766e', color:'#fff', cursor:'pointer', fontSize:12, fontWeight:800 }}><span className="material-symbols-outlined" style={{ fontSize:15 }}>add</span>Add Language</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end', gap:12, marginTop:24, paddingTop:16, borderTop:'1px solid #f1f5f9' }}>
+                  <button onClick={() => setEditOpen(false)} style={{ padding:'10px 20px', border:'1px solid #e2e8f0', borderRadius:10, fontWeight:700, fontSize:14, color:'#64748b', background:'#fff', cursor:'pointer' }}>Cancel</button>
+                  <button onClick={saveEdit} style={{ padding:'10px 24px', background:'linear-gradient(135deg,#082447,#163970)', border:'none', borderRadius:10, fontWeight:700, fontSize:14, color:'#fff', cursor:'pointer', boxShadow:'0 4px 12px rgba(8,36,71,0.25)' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:16, verticalAlign:'middle', marginRight:4 }}>save</span>
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ─── HEADER ─── */}
+          <header style={{ background:'linear-gradient(135deg,#020c1b 0%,#082447 100%)', borderBottom:'3px solid #d4af37', position:'sticky', top:0, zIndex:50 }}>
+            <div className="portal-header" style={{ maxWidth:820, margin:'0 auto', padding:'12px 20px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                <img className="portal-logo" src="ksp_emblem.png" alt="KSP" style={{ height:44, width:44, objectFit:'contain' }} />
+                <div>
+                  <div className="portal-wordmark" style={{ color:'#fff', fontWeight:900, fontSize:'20px', letterSpacing:'0.15em' }}>SAHAYAK</div>
+                  <div className="portal-tagline" style={{ color:'#d4af37', fontSize:'9px', fontWeight:700, letterSpacing:'0.15em', textTransform:'uppercase' }}>Senior Citizen Portal · Karnataka State Police</div>
+                </div>
+              </div>
+              <div style={{ display:'flex', gap:10, alignItems:'center' }}>
+                <div className="language-switch" role="group" aria-label="Select language">
+                  {[['en','EN'],['kn','ಕ'],['hi','हि']].map(([code, label]) => (
+                    <button key={code} type="button" className={language === code ? 'active' : ''} onClick={() => setLanguage(code)} title={code === 'en' ? 'English' : code === 'kn' ? 'Kannada' : 'Hindi'}>{label}</button>
+                  ))}
+                </div>
+                <button type="button" onClick={openEdit} title="Update Profile Record" style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 10px', borderRadius:10, background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.12)', color:'#dbeafe', fontSize:11, fontWeight:800, cursor:'pointer' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize:16, color:'#d4af37' }}>badge</span>
+                  <span className="hidden sm:inline">Verified Profile Record</span>
+                </button>
+                <a href="login.html" style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:10, background:'#fff', color:'#082447', fontWeight:800, fontSize:'13px', textDecoration:'none' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize:18 }}>logout</span>
+                  <span className="hidden sm:inline">Logout</span>
+                </a>
+              </div>
+            </div>
+          </header>
+
+          {/* ─── BODY ─── */}
+          <div style={{ maxWidth:820, margin:'0 auto', width:'100%', padding:'20px 16px', display:'flex', flexDirection:'column', gap:18 }}>
+
+            {/* ══ 1. PROFILE HEADER CARD ══ */}
+            <div className="hero-card colour-banner fade-up" style={{
+              borderRadius:20, padding:'24px',
+              background:'linear-gradient(135deg,#082447 0%,#163970 100%)',
+              border:'2px solid rgba(212,175,55,0.35)', boxShadow:'0 10px 30px rgba(8,36,71,0.18)'
+            }}>
+              <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', gap:20, justifyContent:'space-between' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:18 }}>
+                  {/* Avatar */}
+                  <div style={{
+                    width:80, height:80, borderRadius:'50%', background:'rgba(255,255,255,0.12)',
+                    display:'flex', alignItems:'center', justifyContent:'center', border:'3px solid rgba(212,175,55,0.5)',
+                    flexShrink:0, fontSize:28, fontWeight:900, color:'#fff', letterSpacing:'0.05em'
+                  }}>
+                    {profile.photo ? <img src={profile.photo} alt="Profile Photo" style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : profile.initials}
+                  </div>
+                  <div>
+                    <div style={{ color:'rgba(212,175,55,0.85)', fontSize:11, fontWeight:800, marginBottom:3, letterSpacing:'0.08em', textTransform:'uppercase' }}>
+                      Senior Citizen · {profile.district}, Karnataka
+                    </div>
+                    <div className="hero-name" style={{ color:'#fff', fontWeight:900, fontSize:26, lineHeight:1.2 }}>{profile.name}</div>
+                    <div style={{ color:'#e2e8f0', fontSize:14, marginTop:2 }}>Age {profile.age} · {profile.gender}</div>
+                    <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', gap:8, marginTop:8 }}>
+                      <span style={{ background:'rgba(212,175,55,0.15)', border:'1px solid rgba(212,175,55,0.35)', color:'#d4af37', fontSize:13, fontWeight:800, padding:'3px 10px', borderRadius:20, fontFamily:'monospace', letterSpacing:'0.08em' }}>
+                        {profile.sahayakId}
+                      </span>
+                      <button onClick={copyId} style={{ display:'flex', alignItems:'center', gap:4, fontSize:12, fontWeight:700, padding:'3px 10px', borderRadius:20, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)', color: idCopied ? '#4ade80' : '#e2e8f0', cursor:'pointer' }}>
+                        <span className="material-symbols-outlined" style={{ fontSize:13, fontVariationSettings:"'FILL' 1" }}>{idCopied ? 'check_circle' : 'content_copy'}</span>
+                        {idCopied ? 'Copied!' : 'Copy ID'}
+                      </button>
+                      <span style={{ display:'flex', alignItems:'center', gap:3, fontSize:12, fontWeight:700, color:'#4ade80', padding:'3px 10px', borderRadius:20, background:'rgba(74,222,128,0.1)', border:'1px solid rgba(74,222,128,0.2)' }}>
+                        <span className="material-symbols-outlined" style={{ fontSize:13, fontVariationSettings:"'FILL' 1" }}>verified_user</span>
+                        {profile.verificationStatus}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button className="hero-edit" onClick={openEdit} style={{ display:'flex', alignItems:'center', gap:6, padding:'10px 18px', borderRadius:12, fontWeight:700, fontSize:14, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)', color:'#fff', cursor:'pointer', alignSelf:'flex-start' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize:16 }}>edit</span>
+                  Update Record
+                </button>
+              </div>
+            </div>
+
+            {/* ══ VERIFIED PROFILE RECORD ══ */}
+            {true && (
+              <>
+                <div className="fade-up-1" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))', gap:10 }}>
+                  <div style={{ padding:'14px 16px', borderRadius:14, background:'rgba(255,255,255,.92)', border:'1px solid #dbeafe', boxShadow:'0 3px 10px rgba(8,36,71,.05)', display:'flex', alignItems:'center', gap:10 }}>
+                    <span className="material-symbols-outlined" style={{ color:'#15803d', fontVariationSettings:"'FILL' 1" }}>verified_user</span>
+                    <div><div style={{ fontSize:10, fontWeight:800, color:'#64748b', textTransform:'uppercase', letterSpacing:'.06em' }}>Care status</div><div style={{ fontSize:13, fontWeight:900, color:'#166534' }}>Verified & protected</div></div>
+                  </div>
+                  <div style={{ padding:'14px 16px', borderRadius:14, background:'rgba(255,255,255,.92)', border:'1px solid #dbeafe', boxShadow:'0 3px 10px rgba(8,36,71,.05)', display:'flex', alignItems:'center', gap:10 }}>
+                    <span className="material-symbols-outlined" style={{ color:'#2563eb', fontVariationSettings:"'FILL' 1" }}>local_police</span>
+                    <div><div style={{ fontSize:10, fontWeight:800, color:'#64748b', textTransform:'uppercase', letterSpacing:'.06em' }}>Community care network</div><div style={{ fontSize:13, fontWeight:900, color:'#082447' }}>Shirva Police Station</div></div>
+                  </div>
+                  <a href="tel:14567" style={{ padding:'14px 16px', borderRadius:14, background:'linear-gradient(135deg,#082447,#163970)', border:'1px solid #d4af37', boxShadow:'0 5px 14px rgba(8,36,71,.16)', display:'flex', alignItems:'center', gap:10, color:'#fff', textDecoration:'none' }}>
+                    <span className="material-symbols-outlined" style={{ color:'#fef08a', fontVariationSettings:"'FILL' 1" }}>support_agent</span>
+                    <div><div style={{ fontSize:10, fontWeight:800, color:'#bfdbfe', textTransform:'uppercase', letterSpacing:'.06em' }}>Senior helpline</div><div style={{ fontSize:15, fontWeight:900 }}>14567</div></div>
+                  </a>
+                </div>
+                {/* ══ 2. PERSONAL INFORMATION ══ */}
+                <div className="fade-up-1 section-card" style={{ background:'linear-gradient(135deg,#ffffff 0%,#eff6ff 100%)', borderColor:'#bfdbfe' }}>
+                  <h2 style={{ fontSize:16, fontWeight:900, color:'#0f172a', margin:'0 0 16px 0', display:'flex', alignItems:'center', gap:8 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:20, color:'#163970', fontVariationSettings:"'FILL' 1" }}>person</span>
+                    Personal Information
+                  </h2>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:0 }}>
+                    <InfoRow icon="person" label="Full Name" value={profile.name} large />
+                    <InfoRow icon="cake" label="Date of Birth" value={`${profile.dob} (Age ${profile.age})`} large />
+                    <InfoRow icon="wc" label="Gender" value={profile.gender} />
+                    <InfoRow icon="phone" label="Phone Number" value={profile.phone} large />
+                    <InfoRow icon="email" label="Email Address" value={profile.email} />
+                  </div>
+                </div>
+
+                {/* ══ IDENTITY & ELIGIBILITY ══ */}
+                <div className="fade-up-1 section-card" style={{ background:'linear-gradient(135deg,#fff 0%,#f5f3ff 100%)', borderColor:'#ddd6fe' }}>
+                  <h2 style={{ fontSize:16, fontWeight:900, color:'#0f172a', margin:'0 0 16px 0', display:'flex', alignItems:'center', gap:8 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:20, color:'#6d28d9', fontVariationSettings:"'FILL' 1" }}>badge</span>
+                    Identity &amp; Eligibility
+                  </h2>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:0 }}>
+                    <InfoRow icon="fingerprint" label="Aadhaar Number (masked)" value={profile.aadhaar} large />
+                    <InfoRow icon="badge" label="Senior Citizen Card Number" value={profile.seniorCardNumber} />
+                    <InfoRow icon="bloodtype" label="Blood Group" value={profile.bloodGroup} large />
+                  </div>
+                  <div style={{ display:'inline-flex', alignItems:'center', gap:5, marginTop:4, padding:'5px 9px', borderRadius:8, background:'#f3e8ff', color:'#6b21a8', fontSize:11, fontWeight:800 }}><span className="material-symbols-outlined" style={{ fontSize:14 }}>lock</span>Masked for privacy</div>
+                </div>
+
+                {/* ══ PREFERRED LANGUAGES ══ */}
+                <div className="fade-up-2 section-card" style={{ background:'linear-gradient(135deg,#eff6ff 0%,#fff 55%,#faf5ff 100%)', borderColor:'#bfdbfe' }}>
+                  <h2 style={{ fontSize:16, fontWeight:900, color:'#0f172a', margin:'0 0 7px', display:'flex', alignItems:'center', gap:8 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:20, color:'#2563eb', fontVariationSettings:"'FILL' 1" }}>translate</span>
+                    Preferred Languages
+                  </h2>
+                  <p style={{ fontSize:12, color:'#64748b', fontWeight:600, margin:'0 0 14px' }}>Volunteer communication can be arranged in these languages.</p>
+                  <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', gap:7 }}>
+                    {(profile.preferredLanguages || []).map(preference => (
+                      <span key={preference} className="preference-chip"><span className="material-symbols-outlined" style={{ fontSize:14 }}>translate</span>{preference}</span>
+                    ))}
+                    <button type="button" onClick={openEdit} title="Edit language preferences" style={{ display:'inline-flex', alignItems:'center', gap:4, padding:'7px 10px', borderRadius:9, border:'1px dashed #2563eb', color:'#1d4ed8', background:'#fff', cursor:'pointer', fontSize:12, fontWeight:800 }}><span className="material-symbols-outlined" style={{ fontSize:15 }}>edit</span>Edit language preferences</button>
+                  </div>
+                </div>
+
+                {/* ══ 3. RESIDENTIAL ADDRESS ══ */}
+                <div className="fade-up-2 section-card" style={{ background:'linear-gradient(135deg,#ffffff 0%,#ecfdf5 100%)', borderColor:'#a7f3d0' }}>
+                  <h2 style={{ fontSize:16, fontWeight:900, color:'#0f172a', margin:'0 0 16px 0', display:'flex', alignItems:'center', gap:8 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:20, color:'#163970', fontVariationSettings:"'FILL' 1" }}>home</span>
+                    Residential Address
+                  </h2>
+                  <InfoRow icon="house" label="House / Building" value={profile.address} large />
+                  <InfoRow icon="location_city" label="Village / Taluk" value={`${profile.village} · ${profile.taluk} Taluk`} />
+                  <InfoRow icon="location_on" label="District · State · PIN" value={`${profile.district}, ${profile.state} – ${profile.pinCode}`} />
+                </div>
+
+                {/* ══ 4. EMERGENCY CONTACT ══ */}
+                <div className="fade-up section-card" style={{ border:'2px solid #fde68a', background:'linear-gradient(135deg,#fffbeb 0%,#fff 100%)' }}>
+                  <h2 style={{ fontSize:16, fontWeight:900, color:'#92400e', margin:'0 0 16px 0', display:'flex', alignItems:'center', gap:8 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:20, color:'#d97706', fontVariationSettings:"'FILL' 1" }}>emergency_home</span>
+                    Emergency Contact
+                  </h2>
+                  <InfoRow icon="person" label="Contact Name" value={profile.emergencyContact.name} large />
+                  <InfoRow icon="diversity_1" label="Relationship" value={profile.emergencyContact.relation} />
+                  <InfoRow icon="phone" label="Phone Number" value={profile.emergencyContact.phone} large />
+                </div>
+
+                {/* ══ 5. REGISTRATION INFO ══ */}
+                <div className="fade-up section-card" style={{ background:'linear-gradient(135deg,#f8fafc,#f5f3ff)', border:'1px solid #ddd6fe' }}>
+                  <h2 style={{ fontSize:14, fontWeight:900, color:'#64748b', margin:'0 0 14px 0', display:'flex', alignItems:'center', gap:8, textTransform:'uppercase', letterSpacing:'0.06em' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:18, color:'#94a3b8' }}>info</span>
+                    Registration Information
+                  </h2>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:10 }}>
+                    {[
+                      { label:'Sahayak ID', val: profile.sahayakId, mono: true },
+                      { label:'Registered On', val: profile.registrationDate },
+                      { label:'Profile Status', val: profile.verificationStatus },
+                      { label:'Last Updated', val: profile.lastUpdated },
+                    ].map(d => (
+                      <div key={d.label} style={{ padding:'10px 14px', background:'#fff', borderRadius:12, border:'1px solid #e2e8f0' }}>
+                        <div style={{ fontSize:10, color:'#94a3b8', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:4 }}>{d.label}</div>
+                        <div style={{ fontSize:14, fontWeight:800, color:'#0f172a', fontFamily: d.mono ? 'monospace' : 'inherit' }}>{d.val}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Edit Action */}
+                <div style={{ textAlign:'center', paddingBottom:8 }}>
+                  <button onClick={openEdit} style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 32px', background:'linear-gradient(135deg,#082447,#163970)', border:'none', borderRadius:14, fontWeight:800, fontSize:16, color:'#fff', cursor:'pointer', boxShadow:'0 6px 20px rgba(8,36,71,0.2)' }}>
+                    <span className="material-symbols-outlined" style={{ fontSize:20 }}>edit</span>
+                    Update Personal Record
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Request activity belongs in the central portal, not this profile record. */}
+            {false && (
+              <>
+                {/* Active Requests */}
+                {activeRequests.length > 0 && activeRequests.map(req => (
+                  <div key={req.id} className="fade-up" style={{ borderRadius:20, border:'2px solid #fde68a', background:'linear-gradient(135deg,#fffbeb 0%,#fff 100%)', padding:20 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:14 }}>
+                      <span className="material-symbols-outlined" style={{ fontSize:20, color:'#d97706', fontVariationSettings:"'FILL' 1" }}>person_pin_circle</span>
+                      <span style={{ fontWeight:900, fontSize:'17px', color:'#1e293b' }}>Volunteer is On the Way!</span>
+                      <span style={{ marginLeft:'auto', fontSize:'12px', fontWeight:800, padding:'3px 12px', borderRadius:20, background: req.statusBg, color: req.statusColor, border:`1px solid ${req.statusBorder}` }}>{req.status}</span>
+                    </div>
+                    <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:14, padding:14, display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:14, marginBottom:12 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+                        <div style={{ width:52, height:52, borderRadius:'50%', background:'linear-gradient(135deg,#082447,#163970)', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:900, fontSize:'18px', flexShrink:0 }}>RK</div>
+                        <div>
+                          <div style={{ fontSize:11, color:'#94a3b8', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.07em', marginBottom:2 }}>Your Volunteer</div>
+                          <div style={{ fontSize:18, fontWeight:900, color:'#0f172a' }}>{req.volunteer}</div>
+                          <div style={{ display:'flex', alignItems:'center', gap:6, marginTop:3 }}>
+                            <span style={{ fontSize:11, color:'#64748b', fontFamily:'monospace', fontWeight:600 }}>{req.volId}</span>
+                            {req.stationVerified && (
+                              <span style={{ display:'flex', alignItems:'center', gap:3, fontSize:11, fontWeight:700, color:'#15803d', background:'#f0fdf4', border:'1px solid #bbf7d0', padding:'2px 8px', borderRadius:20 }}>
+                                <span className="material-symbols-outlined" style={{ fontSize:12, fontVariationSettings:"'FILL' 1" }}>verified</span>
+                                Verified
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ textAlign:'center', background:'#fef3c7', border:'1px solid #fde68a', borderRadius:12, padding:'8px 16px' }}>
+                        <span className="material-symbols-outlined" style={{ fontSize:24, color:'#d97706' }}>directions_walk</span>
+                        <div style={{ fontSize:13, fontWeight:800, color:'#92400e' }}>{req.eta}</div>
+                      </div>
+                    </div>
+                    <a href={`tel:${req.phone}`} style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, padding:'14px', borderRadius:14, background:'linear-gradient(135deg,#082447,#163970)', color:'#fff', fontWeight:800, fontSize:16, textDecoration:'none' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize:22, fontVariationSettings:"'FILL' 1" }}>call</span>
+                      Call Volunteer
+                    </a>
+                  </div>
+                ))}
+
+                {/* History */}
+                {historyRequests.length > 0 && (
+                  <div className="fade-up section-card">
+                    <h2 style={{ fontSize:16, fontWeight:900, color:'#0f172a', margin:'0 0 14px 0', display:'flex', alignItems:'center', gap:8 }}>
+                      <span className="material-symbols-outlined" style={{ fontSize:20, color:'#163970', fontVariationSettings:"'FILL' 1" }}>history</span>
+                      Past Requests
+                    </h2>
+                    <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                      {historyRequests.map(req => (
+                        <div key={req.id} style={{ background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:14, padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:10 }}>
+                          <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                            <div style={{ width:40, height:40, borderRadius:'50%', background:'#dcfce7', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                              <span className="material-symbols-outlined" style={{ fontSize:20, color:'#15803d', fontVariationSettings:"'FILL' 1" }}>task_alt</span>
+                            </div>
+                            <div>
+                              <div style={{ fontWeight:800, fontSize:16, color:'#0f172a' }}>{req.type}</div>
+                              <div style={{ fontSize:13, color:'#64748b', marginTop:2 }}>{req.volunteer} · {req.date}</div>
+                            </div>
+                          </div>
+                          <span style={{ fontSize:12, fontWeight:800, padding:'4px 12px', borderRadius:20, background: req.statusBg, color: req.statusColor, border:`1px solid ${req.statusBorder}`, textTransform:'uppercase' }}>
+                            {req.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+          </div>
+
+          {/* ─── FOOTER ─── */}
+          <footer style={{ background:'linear-gradient(135deg,#020c1b 0%,#082447 100%)', borderTop:'3px solid #d4af37', padding:'20px 16px', marginTop:'auto' }}>
+            <div style={{ maxWidth:820, margin:'0 auto', textAlign:'center' }}>
+              <div style={{ color:'#fff', fontWeight:800, fontSize:16, marginBottom:4 }}>Need phone help?</div>
+              <div style={{ color:'#93c5fd', fontSize:14, marginBottom:8 }}>
+                Call toll-free helpline:
+                <a href="tel:14567" style={{ color:'#d4af37', fontWeight:900, marginLeft:8, fontSize:18, textDecoration:'none' }}>14567</a>
+              </div>
+              <div style={{ color:'rgba(147,197,253,0.5)', fontSize:11 }}>Karnataka State Police · Udupi District · Sahayak Programme</div>
+            </div>
+          </footer>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<SeniorProfile />);
+  </script>
+</body>
+</html>
